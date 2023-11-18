@@ -14,7 +14,7 @@ namespace OOPmenu
         public ConsoleColor barvatextu = ConsoleColor.Yellow;
         public ConsoleColor barvaokurzoru = ConsoleColor.Blue;
         public int sirka = 25;
-        public string[] polozky = new string[5];
+        public string[] polozky = new string[100];
 
         public void zobraz()
         {
