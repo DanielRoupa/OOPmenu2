@@ -6,79 +6,85 @@ using System.Threading.Tasks;
 
 namespace OOPmenu
 {
+    public enum barvy
+    {
+        ZLUTA,
+        MODRA,
+        CERVENA,
+        BILA,
+        CERNA,
+        ZELENA
+    }
+
+
     public class Menu
     {
         public string Nadpis = "";
+        public int sirka = 25;
+        public List<(string polozka, barvy barva)> polozky = new List<(string, barvy)>();
+
         public ConsoleColor barvaokraje = ConsoleColor.Green;
         public ConsoleColor barvapozadi = ConsoleColor.Black;
         public ConsoleColor barvatextu = ConsoleColor.Yellow;
         public ConsoleColor barvaokurzoru = ConsoleColor.Blue;
-        public int sirka = 25;
-        public string[] polozky = new string[5];
+
+        private static readonly Dictionary<barvy, ConsoleColor> mapaBarev = new Dictionary<barvy, ConsoleColor>
+        {
+            { barvy.CERVENA, ConsoleColor.Red },
+            { barvy.ZELENA, ConsoleColor.Green },
+            { barvy.MODRA, ConsoleColor.Blue },
+            { barvy.CERNA, ConsoleColor.Black },
+            { barvy.ZLUTA, ConsoleColor.Yellow },
+            { barvy.BILA, ConsoleColor.White }
+        };
+
 
         public void zobraz()
         {
-            zobrazokraj();
-            zobraznadpis();
-            //zobrazkurzor();
-            zobrazpolozky();
+            zobrazOkraj();
+            zobrazNadpis();
+            zobrazPolozky();
         }
-        private void zobraznadpis()
+        private void zobrazNadpis()
         {
             Console.BackgroundColor = barvapozadi;
             Console.ForegroundColor = barvatextu;
             Console.SetCursorPosition(3, 1);
             Console.Write(Nadpis);
         }
-        private void zobrazpolozky()
+        private void zobrazPolozky()
         {
-            Console.BackgroundColor = barvapozadi;
-            Console.ForegroundColor = barvatextu;
-            //Console.SetCursorPosition(3, 3);
-            //Console.Write(polozky[0]);
-            //Console.SetCursorPosition(3, 4);
-            //Console.Write(polozky[1]);
-            //Console.SetCursorPosition(3, 5);
-            //Console.Write(polozky[2]);
-            //Console.SetCursorPosition(3, 6);
-            //Console.Write(polozky[3]);
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < polozky.Count; i++)
             {
                 Console.SetCursorPosition(3, i + 3);
-                Console.Write(polozky[i]);
+                Console.ForegroundColor = PrevodDoConsoleBarvy(polozky[i].barva);
+                Console.Write(polozky[i].polozka);
             }
-        }
 
-        private void zobrazokraj()
+        }
+        private void zobrazOkraj()
         {
             Console.BackgroundColor = barvapozadi;
             Console.ForegroundColor = barvaokraje;
-            Console.Write("╔");
-            
-            Console.Write(new String('═',sirka));
+            // Záhlaví
+            Console.WriteLine($"╔{new string('═', sirka)}╗");
+            Console.WriteLine($"║{new string(' ', sirka)}║");
+            Console.WriteLine($"╠{new string('═', sirka)}╣");
 
-            Console.WriteLine("╗");
-            Console.Write("║");
-            Console.Write(new String(' ', sirka));
-            Console.WriteLine("║");
-            Console.Write("╠");
-            Console.Write(new String('═', sirka));
-            Console.WriteLine("╣");
-            for (int i = 0; i < polozky.Length; i++)
-            {
-                Console.Write("║");
-                Console.Write(new String(' ', sirka));
-                Console.WriteLine("║");
-            }
-            Console.Write("╚");
-            
-            Console.Write(new String('═', sirka));
-            Console.WriteLine("╝");
+            // Okraj mění délku podle počtu položek v polozky
+            for (int i = 0; i < polozky.Count; i++) Console.WriteLine($"║{new string(' ', sirka)}║");
 
-
-
-
-
+            // Zápatí
+            Console.WriteLine($"╚{new string('═', sirka)}╝");
         }
+
+        public static ConsoleColor PrevodDoConsoleBarvy(barvy color)
+        {
+            if (mapaBarev.TryGetValue(color, out ConsoleColor consoleColor))return consoleColor;
+            throw new ArgumentException("Barva neexistuje", nameof(color));
+        }
+
     }
+
+
 }
